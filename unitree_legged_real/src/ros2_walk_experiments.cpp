@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         high_cmd_ros.yaw_speed = 0.0f;
         high_cmd_ros.reserve = 0;
 
-        motion_period = 1000
+        int motion_period = 1000;
 
         if (motiontime > 0 && motiontime < motion_period)
         {
