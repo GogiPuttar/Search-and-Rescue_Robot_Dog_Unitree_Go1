@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         if (motiontime > 0 && motiontime < motion_period)
         {
             std::cout << "Mode 1" << std::endl;
-            high_cmd_ros.mode = 1;
+            high_cmd_ros.mode = 5;
             // high_cmd_ros.euler[2] = 0.2;
 
         }

@@ -16,7 +16,7 @@ uint32[2] version
 #
 uint16 band_width
 # Can be 0, 1, 2, 5, 6
-# 0 : 
+# 0 : Body Pose Control, yaw through body pose
 # 1 : Body Pose Control, yaw through body pose
 # 2 : Velocity Control, yaw through steering
 uint8 mode 
