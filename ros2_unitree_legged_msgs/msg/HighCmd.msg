@@ -29,9 +29,9 @@ float32 foot_raise_height
 float32 body_height	   
 #
 float32[2] position 
-# Roll, Pitch, Yaw
+# Roll, Pitch, Yaw (-0.2 - 0.2)
 float32[3] euler	   
-# X is straight ahead, Y is to the left
+# X is straight ahead, Y is to the left, Z is up
 float32[2] velocity 
 #
 float32 yaw_speed
