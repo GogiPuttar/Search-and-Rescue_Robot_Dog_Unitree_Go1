@@ -17,7 +17,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='use_rviz',
-            default_value='false',
+            default_value='true',
             choices=['true','false'],
             description='Open RVIZ for Go1 visualization'
         ),
