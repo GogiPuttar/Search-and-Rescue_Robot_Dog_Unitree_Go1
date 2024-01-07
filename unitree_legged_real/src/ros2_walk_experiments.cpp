@@ -51,7 +51,9 @@ int main(int argc, char **argv)
         high_cmd_ros.yaw_speed = 0.0f;
         high_cmd_ros.reserve = 0;
 
-        if (motiontime > 0 && motiontime < 1000)
+        motion_period = 1000
+
+        if (motiontime > 0 && motiontime < motion_period)
         {
             std::cout << "Mode 1" << std::endl;
             high_cmd_ros.mode = 1;
