@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
     if (strcasecmp(argv[1], "LOWLEVEL") == 0)
     {
-        printf("low level runing!\n");
+        printf("low level running!\n");
 
         pub_low = node->create_publisher<ros2_unitree_legged_msgs::msg::LowState>("low_state", 1);
         sub_low = node->create_subscription<ros2_unitree_legged_msgs::msg::LowCmd>("low_cmd", 1, lowCmdCallback);
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     }
     else if (strcasecmp(argv[1], "HIGHLEVEL") == 0)
     {
-        printf("high level runing!\n");
+        printf("high level running!\n");
 
         pub_high = node->create_publisher<ros2_unitree_legged_msgs::msg::HighState>("high_state", 1);
         sub_high = node->create_subscription<ros2_unitree_legged_msgs::msg::HighCmd>("high_cmd", 1, highCmdCallback);
