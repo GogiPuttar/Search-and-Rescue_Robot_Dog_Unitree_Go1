@@ -1,0 +1,15 @@
+
+**/__pycache__/**
+
+**.pyc
+
+.vscode
+
+**.vscode
+
+__pycache__
+*.urdf
+
+TODO.txt
+
+.gitignore
