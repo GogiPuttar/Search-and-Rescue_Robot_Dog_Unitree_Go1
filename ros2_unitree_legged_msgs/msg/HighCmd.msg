@@ -29,7 +29,7 @@ float32 foot_raise_height
 float32 body_height	   
 #
 float32[2] position 
-#
+# Roll,
 float32[3] euler	   
 #
 float32[2] velocity 
