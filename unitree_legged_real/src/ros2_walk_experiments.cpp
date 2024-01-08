@@ -56,12 +56,15 @@ int main(int argc, char **argv)
         if (motiontime > 0 && motiontime < motion_period)
         {
             std::cout << "Mode 1" << std::endl;
-            high_cmd_ros.mode = 2;
-            high_cmd_ros.gait_type = 1;
+            // high_cmd_ros.mode = 2;
+            // high_cmd_ros.gait_type = 1;
             // high_cmd_ros.velocity[0] = 0.2f; // -1  ~ +1
             // high_cmd_ros.body_height = -0.1;
-            high_cmd_ros.yaw_speed = 1;
+            // high_cmd_ros.yaw_speed = 1;
             // high_cmd_ros.euler[2] = 0.2;
+
+            high_cmd_ros.mode = 6;
+
 
         }
         // if (motiontime > 1000 && motiontime < 2000)

@@ -19,7 +19,9 @@ uint16 band_width
 # 0 : Body Pose Control, yaw through body pose ??
 # 1 : Body Pose Control, yaw through body pose
 # 2 : Velocity Control, yaw through steering
-# 5 : Body Pose Control, yaw through body pose ??
+# 3 : Continuous motion ??
+# 5 : Damping State
+# 6 : Lock Joints and enter prone state
 
 uint8 mode 
 
@@ -39,9 +41,9 @@ float32[2] position
 float32[3] euler	   
 # [X_dot, Y_dot] X+ is straight ahead, Y+ is to the left.
 float32[2] velocity 
-#  theta_dot, Z+ is up.
+# theta_dot, Z+ is up.
 float32 yaw_speed
-#				   
+# 			   
 BmsCmd bms
 #
 LED[4] led
