@@ -24,7 +24,8 @@ uint16 band_width
 uint8 mode 
 
 #
-#
+# 1 : For x and y velocities.
+# 2 : Unstable and more  aerial ??
 uint8 gait_type		   
 #
 uint8 speed_level			   
@@ -38,7 +39,7 @@ float32[2] position
 float32[3] euler	   
 # [X_dot, Y_dot] X+ is straight ahead, Y+ is to the left.
 float32[2] velocity 
-# 
+#  theta_dot, Z+ is up.
 float32 yaw_speed
 #				   
 BmsCmd bms

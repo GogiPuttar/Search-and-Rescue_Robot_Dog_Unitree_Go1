@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         high_cmd_ros.yaw_speed = 0.0f;
         high_cmd_ros.reserve = 0;
 
-        int motion_period = 1000; //seconds
+        int motion_period = 10000; //seconds
 
         if (motiontime > 0 && motiontime < motion_period)
         {
@@ -59,7 +59,8 @@ int main(int argc, char **argv)
             high_cmd_ros.mode = 2;
             high_cmd_ros.gait_type = 1;
             // high_cmd_ros.velocity[0] = 0.2f; // -1  ~ +1
-            high_cmd_ros.body_height = -0.1;
+            // high_cmd_ros.body_height = -0.1;
+            high_cmd_ros.yaw_speed = 1;
             // high_cmd_ros.euler[2] = 0.2;
 
         }
