@@ -22,9 +22,7 @@ uint16 band_width
 # 3 : Continuous motion ??
 # 5 : Damping State
 # 6 : Lock Joints and enter prone state
-
 uint8 mode 
-
 #
 # 1 : For x and y velocities.
 # 2 : Unstable and more  aerial ??
