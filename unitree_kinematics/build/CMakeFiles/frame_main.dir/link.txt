@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/frame_main.dir/src/frame_main.cpp.o  -o frame_main  libunitree_kinematics.a 

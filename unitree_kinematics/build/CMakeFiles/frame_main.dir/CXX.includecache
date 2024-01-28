@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/unitree_kinematics/geometry2d.hpp
+iosfwd
+-
+
+../include/unitree_kinematics/se2d.hpp
+iosfwd
+-
+unitree_kinematics/geometry2d.hpp
+../include/unitree_kinematics/unitree_kinematics/geometry2d.hpp
+
+../include/unitree_kinematics/svg.hpp
+iostream
+-
+fstream
+-
+vector
+-
+
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/src/frame_main.cpp
+iostream
+-
+unitree_kinematics/geometry2d.hpp
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/src/unitree_kinematics/geometry2d.hpp
+unitree_kinematics/se2d.hpp
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/src/unitree_kinematics/se2d.hpp
+cmath
+-
+unitree_kinematics/svg.hpp
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/src/unitree_kinematics/svg.hpp
+

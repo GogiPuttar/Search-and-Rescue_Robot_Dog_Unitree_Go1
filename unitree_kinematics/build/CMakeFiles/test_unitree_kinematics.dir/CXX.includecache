@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/unitree_kinematics/geometry2d.hpp
+iosfwd
+-
+
+../include/unitree_kinematics/se2d.hpp
+iosfwd
+-
+unitree_kinematics/geometry2d.hpp
+../include/unitree_kinematics/unitree_kinematics/geometry2d.hpp
+
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/tests/test_se2d.cpp
+sstream
+-
+catch2/catch_test_macros.hpp
+-
+catch2/matchers/catch_matchers_floating_point.hpp
+-
+unitree_kinematics/geometry2d.hpp
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/tests/unitree_kinematics/geometry2d.hpp
+unitree_kinematics/se2d.hpp
+/home/aditya/aditya/ws/src/Search_for_missing_person_Unitree_Go1/unitree_kinematics/tests/unitree_kinematics/se2d.hpp
+

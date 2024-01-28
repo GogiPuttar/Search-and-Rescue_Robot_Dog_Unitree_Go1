@@ -1,0 +1,2 @@
+/usr/bin/ar qc libunitree_kinematics.a  CMakeFiles/unitree_kinematics.dir/src/geometry2d.cpp.o CMakeFiles/unitree_kinematics.dir/src/se2d.cpp.o CMakeFiles/unitree_kinematics.dir/src/svg.cpp.o CMakeFiles/unitree_kinematics.dir/src/kinematic_state.cpp.o
+/usr/bin/ranlib libunitree_kinematics.a
