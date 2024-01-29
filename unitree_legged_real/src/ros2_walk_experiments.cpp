@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 
@@ -23,12 +23,12 @@ int main(int argc, char **argv)
 
     long motiontime = 0;
 
-    ros2_unitree_legged_msgs::msg::HighCmd high_cmd_ros;
+    ros2_unitree_legged_interfaces::msg::HighCmd high_cmd_ros;
 
-    // rclcpp::Publisher<ros2_unitree_legged_msgs::msg::HighCmd>::SharedPtr pub =
-    //     node->create_publisher<ros2_unitree_legged_msgs::msg::HighCmd>("high_cmd", 1);
+    // rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::HighCmd>::SharedPtr pub =
+    //     node->create_publisher<ros2_unitree_interfaces::msg::HighCmd>("high_cmd", 1);
 
-    auto pub = node->create_publisher<ros2_unitree_legged_msgs::msg::HighCmd>("high_cmd", 1);
+    auto pub = node->create_publisher<ros2_unitree_legged_interfaces::msg::HighCmd>("high_cmd", 1);
 
     while (rclcpp::ok())
     {

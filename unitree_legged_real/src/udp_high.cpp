@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 
@@ -46,10 +46,10 @@ public:
     );
 
     //Publishers
-    pub_state_ = this->create_publisher<ros2_unitree_legged_msgs::msg::HighState>("high_state", 10);
+    pub_state_ = this->create_publisher<ros2_unitree_legged_interfaces::msg::HighState>("high_state", 10);
     
     //Subscribers
-    sub_cmd_ = this->create_subscription<ros2_unitree_legged_msgs::msg::HighCmd>(
+    sub_cmd_ = this->create_subscription<ros2_unitree_legged_interfaces::msg::HighCmd>(
       "high_cmd",
       10,
       std::bind(&UDPHighNode::cmd_callback, this, std::placeholders::_1)
@@ -58,15 +58,15 @@ public:
 
 private:
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Publisher<ros2_unitree_legged_msgs::msg::HighState>::SharedPtr pub_state_;
-  rclcpp::Subscription<ros2_unitree_legged_msgs::msg::HighCmd>::SharedPtr sub_cmd_;
+  rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::HighState>::SharedPtr pub_state_;
+  rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::HighCmd>::SharedPtr sub_cmd_;
   
 
   double rate_, interval_;
   UDPHighBridge bridge_;
-  ros2_unitree_legged_msgs::msg::HighState state_ros_;
+  ros2_unitree_legged_interfaces::msg::HighState state_ros_;
 
-  void cmd_callback(const ros2_unitree_legged_msgs::msg::HighCmd::SharedPtr msg)
+  void cmd_callback(const ros2_unitree_legged_interfaces::msg::HighCmd::SharedPtr msg)
   {
     //Convert ROS message to UDP command
     bridge_.cmd = rosMsg2Cmd(msg);

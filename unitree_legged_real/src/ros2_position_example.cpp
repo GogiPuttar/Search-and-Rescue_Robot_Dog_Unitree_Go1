@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 #include <cmath>
@@ -23,12 +23,12 @@ int main(int argc, char **argv)
 
     long motiontime = 0;
 
-    ros2_unitree_legged_msgs::msg::LowCmd low_cmd_ros;
+    ros2_unitree_legged_interfaces::msg::LowCmd low_cmd_ros;
 
     bool initiated_flag = false; // initiate need time
     int count = 0;
 
-    auto pub = node->create_publisher<ros2_unitree_legged_msgs::msg::LowCmd>("low_cmd", 1);
+    auto pub = node->create_publisher<ros2_unitree_legged_interfaces::msg::LowCmd>("low_cmd", 1);
 
     low_cmd_ros.head[0] = 0xFE;
     low_cmd_ros.head[1] = 0xEF;

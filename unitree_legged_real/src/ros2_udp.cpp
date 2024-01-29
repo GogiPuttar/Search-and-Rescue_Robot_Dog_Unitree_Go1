@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 
@@ -31,16 +31,16 @@ public:
 
 Custom custom;
 
-rclcpp::Subscription<ros2_unitree_legged_msgs::msg::HighCmd>::SharedPtr sub_high;
-rclcpp::Subscription<ros2_unitree_legged_msgs::msg::LowCmd>::SharedPtr sub_low;
+rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::HighCmd>::SharedPtr sub_high;
+rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::LowCmd>::SharedPtr sub_low;
 
-rclcpp::Publisher<ros2_unitree_legged_msgs::msg::HighState>::SharedPtr pub_high;
-rclcpp::Publisher<ros2_unitree_legged_msgs::msg::LowState>::SharedPtr pub_low;
+rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::HighState>::SharedPtr pub_high;
+rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::LowState>::SharedPtr pub_low;
 
 long high_count = 0;
 long low_count = 0;
 
-void highCmdCallback(const ros2_unitree_legged_msgs::msg::HighCmd::SharedPtr msg)
+void highCmdCallback(const ros2_unitree_legged_interfaces::msg::HighCmd::SharedPtr msg)
 {
     printf("highCmdCallback is running!\t%ld\n", ::high_count);
 
@@ -49,7 +49,7 @@ void highCmdCallback(const ros2_unitree_legged_msgs::msg::HighCmd::SharedPtr msg
     custom.high_udp.SetSend(custom.high_cmd);
     custom.high_udp.Send();
 
-    ros2_unitree_legged_msgs::msg::HighState high_state_ros;
+    ros2_unitree_legged_interfaces::msg::HighState high_state_ros;
 
     custom.high_udp.Recv();
     custom.high_udp.GetRecv(custom.high_state);
@@ -61,7 +61,7 @@ void highCmdCallback(const ros2_unitree_legged_msgs::msg::HighCmd::SharedPtr msg
     printf("highCmdCallback ending!\t%ld\n\n", ::high_count++);
 }
 
-void lowCmdCallback(const ros2_unitree_legged_msgs::msg::LowCmd::SharedPtr msg)
+void lowCmdCallback(const ros2_unitree_legged_interfaces::msg::LowCmd::SharedPtr msg)
 {
 
     printf("lowCmdCallback is running!\t%ld\n", low_count);
@@ -71,7 +71,7 @@ void lowCmdCallback(const ros2_unitree_legged_msgs::msg::LowCmd::SharedPtr msg)
     custom.low_udp.SetSend(custom.low_cmd);
     custom.low_udp.Send();
 
-    ros2_unitree_legged_msgs::msg::LowState low_state_ros;
+    ros2_unitree_legged_interfaces::msg::LowState low_state_ros;
 
     custom.low_udp.Recv();
     custom.low_udp.GetRecv(custom.low_state);
@@ -93,8 +93,8 @@ int main(int argc, char **argv)
     {
         printf("low level running!\n");
 
-        pub_low = node->create_publisher<ros2_unitree_legged_msgs::msg::LowState>("low_state", 1);
-        sub_low = node->create_subscription<ros2_unitree_legged_msgs::msg::LowCmd>("low_cmd", 1, lowCmdCallback);
+        pub_low = node->create_publisher<ros2_unitree_legged_interfaces::msg::LowState>("low_state", 1);
+        sub_low = node->create_subscription<ros2_unitree_legged_interfaces::msg::LowCmd>("low_cmd", 1, lowCmdCallback);
 
         rclcpp::spin(node);
     }
@@ -102,8 +102,8 @@ int main(int argc, char **argv)
     {
         printf("high level running!\n");
 
-        pub_high = node->create_publisher<ros2_unitree_legged_msgs::msg::HighState>("high_state", 1);
-        sub_high = node->create_subscription<ros2_unitree_legged_msgs::msg::HighCmd>("high_cmd", 1, highCmdCallback);
+        pub_high = node->create_publisher<ros2_unitree_legged_interfaces::msg::HighState>("high_state", 1);
+        sub_high = node->create_subscription<ros2_unitree_legged_interfaces::msg::HighCmd>("high_cmd", 1, highCmdCallback);
 
         rclcpp::spin(node);
     }

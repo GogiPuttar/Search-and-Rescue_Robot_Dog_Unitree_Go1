@@ -6,19 +6,19 @@ Use of this source code is governed by the MPL-2.0 license, see LICENSE.
 #ifndef _CONVERT_H_
 #define _CONVERT_H_
 
-#include "ros2_unitree_legged_msgs/msg/low_cmd.h"
-#include "ros2_unitree_legged_msgs/msg/low_state.h"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.h"
-#include "ros2_unitree_legged_msgs/msg/high_state.h"
-#include "ros2_unitree_legged_msgs/msg/motor_cmd.h"
-#include "ros2_unitree_legged_msgs/msg/motor_state.h"
-#include "ros2_unitree_legged_msgs/msg/bms_cmd.h"
-#include "ros2_unitree_legged_msgs/msg/bms_state.h"
-#include "ros2_unitree_legged_msgs/msg/imu.h"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.h"
+#include "ros2_unitree_legged_interfaces/msg/low_state.h"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.h"
+#include "ros2_unitree_legged_interfaces/msg/high_state.h"
+#include "ros2_unitree_legged_interfaces/msg/motor_cmd.h"
+#include "ros2_unitree_legged_interfaces/msg/motor_state.h"
+#include "ros2_unitree_legged_interfaces/msg/bms_cmd.h"
+#include "ros2_unitree_legged_interfaces/msg/bms_state.h"
+#include "ros2_unitree_legged_interfaces/msg/imu.h"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "rclcpp/rclcpp.hpp"
 
-UNITREE_LEGGED_SDK::BmsCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::BmsCmd &msg)
+UNITREE_LEGGED_SDK::BmsCmd rosMsg2Cmd(const ros2_unitree_legged_interfaces::msg::BmsCmd &msg)
 {
     UNITREE_LEGGED_SDK::BmsCmd cmd;
 
@@ -32,7 +32,7 @@ UNITREE_LEGGED_SDK::BmsCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::BmsCm
     return cmd;
 }
 
-UNITREE_LEGGED_SDK::HighCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::HighCmd::SharedPtr &msg)
+UNITREE_LEGGED_SDK::HighCmd rosMsg2Cmd(const ros2_unitree_legged_interfaces::msg::HighCmd::SharedPtr &msg)
 {
     UNITREE_LEGGED_SDK::HighCmd cmd;
 
@@ -79,7 +79,7 @@ UNITREE_LEGGED_SDK::HighCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::High
     return cmd;
 }
 
-UNITREE_LEGGED_SDK::MotorCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::MotorCmd &msg)
+UNITREE_LEGGED_SDK::MotorCmd rosMsg2Cmd(const ros2_unitree_legged_interfaces::msg::MotorCmd &msg)
 {
     UNITREE_LEGGED_SDK::MotorCmd cmd;
 
@@ -98,7 +98,7 @@ UNITREE_LEGGED_SDK::MotorCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::Mot
     return cmd;
 }
 
-UNITREE_LEGGED_SDK::LowCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::LowCmd::SharedPtr &msg)
+UNITREE_LEGGED_SDK::LowCmd rosMsg2Cmd(const ros2_unitree_legged_interfaces::msg::LowCmd::SharedPtr &msg)
 {
     UNITREE_LEGGED_SDK::LowCmd cmd;
 
@@ -130,9 +130,9 @@ UNITREE_LEGGED_SDK::LowCmd rosMsg2Cmd(const ros2_unitree_legged_msgs::msg::LowCm
     return cmd;
 }
 
-ros2_unitree_legged_msgs::msg::MotorState state2rosMsg(UNITREE_LEGGED_SDK::MotorState &state)
+ros2_unitree_legged_interfaces::msg::MotorState state2rosMsg(UNITREE_LEGGED_SDK::MotorState &state)
 {
-    ros2_unitree_legged_msgs::msg::MotorState ros_msg;
+    ros2_unitree_legged_interfaces::msg::MotorState ros_msg;
 
     ros_msg.mode = state.mode;
     ros_msg.q = state.q;
@@ -150,9 +150,9 @@ ros2_unitree_legged_msgs::msg::MotorState state2rosMsg(UNITREE_LEGGED_SDK::Motor
     return ros_msg;
 }
 
-ros2_unitree_legged_msgs::msg::IMU state2rosMsg(UNITREE_LEGGED_SDK::IMU &state)
+ros2_unitree_legged_interfaces::msg::IMU state2rosMsg(UNITREE_LEGGED_SDK::IMU &state)
 {
-    ros2_unitree_legged_msgs::msg::IMU ros_msg;
+    ros2_unitree_legged_interfaces::msg::IMU ros_msg;
 
     for (int i(0); i < 4; i++)
     {
@@ -171,9 +171,9 @@ ros2_unitree_legged_msgs::msg::IMU state2rosMsg(UNITREE_LEGGED_SDK::IMU &state)
     return ros_msg;
 }
 
-ros2_unitree_legged_msgs::msg::BmsState state2rosMsg(UNITREE_LEGGED_SDK::BmsState &state)
+ros2_unitree_legged_interfaces::msg::BmsState state2rosMsg(UNITREE_LEGGED_SDK::BmsState &state)
 {
-    ros2_unitree_legged_msgs::msg::BmsState ros_msg;
+    ros2_unitree_legged_interfaces::msg::BmsState ros_msg;
 
     for (int i(0); i < 2; i++)
     {
@@ -196,9 +196,9 @@ ros2_unitree_legged_msgs::msg::BmsState state2rosMsg(UNITREE_LEGGED_SDK::BmsStat
     return ros_msg;
 }
 
-ros2_unitree_legged_msgs::msg::LowState state2rosMsg(UNITREE_LEGGED_SDK::LowState &state)
+ros2_unitree_legged_interfaces::msg::LowState state2rosMsg(UNITREE_LEGGED_SDK::LowState &state)
 {
-    ros2_unitree_legged_msgs::msg::LowState ros_msg;
+    ros2_unitree_legged_interfaces::msg::LowState ros_msg;
 
     for (int i(0); i < 2; i++)
     {
@@ -234,9 +234,9 @@ ros2_unitree_legged_msgs::msg::LowState state2rosMsg(UNITREE_LEGGED_SDK::LowStat
     return ros_msg;
 }
 
-ros2_unitree_legged_msgs::msg::Cartesian state2rosMsg(UNITREE_LEGGED_SDK::Cartesian &state)
+ros2_unitree_legged_interfaces::msg::Cartesian state2rosMsg(UNITREE_LEGGED_SDK::Cartesian &state)
 {
-    ros2_unitree_legged_msgs::msg::Cartesian ros_msg;
+    ros2_unitree_legged_interfaces::msg::Cartesian ros_msg;
 
     ros_msg.x = state.x;
     ros_msg.y = state.y;
@@ -245,9 +245,9 @@ ros2_unitree_legged_msgs::msg::Cartesian state2rosMsg(UNITREE_LEGGED_SDK::Cartes
     return ros_msg;
 }
 
-ros2_unitree_legged_msgs::msg::HighState state2rosMsg(UNITREE_LEGGED_SDK::HighState &state)
+ros2_unitree_legged_interfaces::msg::HighState state2rosMsg(UNITREE_LEGGED_SDK::HighState &state)
 {
-    ros2_unitree_legged_msgs::msg::HighState ros_msg;
+    ros2_unitree_legged_interfaces::msg::HighState ros_msg;
 
     for (int i(0); i < 2; i++)
     {

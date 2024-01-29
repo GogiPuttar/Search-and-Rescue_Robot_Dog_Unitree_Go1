@@ -1,7 +1,7 @@
 
 
 cmake_minimum_required(VERSION 3.5)
-project(ros2_unitree_legged_msgs)
+project(ros2_unitree_legged_interfaces)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -30,6 +30,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LowState.msg"
   "msg/HighCmd.msg"
   "msg/HighState.msg"
+  "srv/Waypoint.srv"
 )
 
 

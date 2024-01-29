@@ -5,10 +5,10 @@
 #include <cmath>
 
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 
 using namespace std::chrono_literals;
 
@@ -71,8 +71,8 @@ class CustomGait : public rclcpp::Node
     : Node("custom_gait")
     {
       rate = (std::chrono::milliseconds) ((int) rate_ms);
-      cmd_pub_ = create_publisher<ros2_unitree_legged_msgs::msg::LowCmd>("low_cmd", 10);
-      state_sub_ = create_subscription<ros2_unitree_legged_msgs::msg::LowState>("low_state", 10,
+      cmd_pub_ = create_publisher<ros2_unitree_legged_interfaces::msg::LowCmd>("low_cmd", 10);
+      state_sub_ = create_subscription<ros2_unitree_legged_interfaces::msg::LowState>("low_state", 10,
         std::bind(&CustomGait::state_cb, this, std::placeholders::_1));
       timer_ = create_wall_timer(
         rate,
@@ -134,7 +134,7 @@ class CustomGait : public rclcpp::Node
       RCLCPP_INFO_STREAM(get_logger(), "Waiting...");
     }
   private:
-    void state_cb(const ros2_unitree_legged_msgs::msg::LowState & msg)
+    void state_cb(const ros2_unitree_legged_interfaces::msg::LowState & msg)
     {
       if (feets.size()==0){
         // first iteration
@@ -333,12 +333,12 @@ class CustomGait : public rclcpp::Node
     }
 
     rclcpp::TimerBase::SharedPtr timer_;
-    ros2_unitree_legged_msgs::msg::LowCmd low_cmd_ros;
+    ros2_unitree_legged_interfaces::msg::LowCmd low_cmd_ros;
     long motiontime = 0;
     bool initiated_flag = false;
     int count = 0;
-    rclcpp::Publisher<ros2_unitree_legged_msgs::msg::LowCmd>::SharedPtr cmd_pub_;
-    rclcpp::Subscription<ros2_unitree_legged_msgs::msg::LowState>::SharedPtr state_sub_;
+    rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::LowCmd>::SharedPtr cmd_pub_;
+    rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::LowState>::SharedPtr state_sub_;
     std::vector<int> feets;
     // number of ms between timer ticks
     int rate_ms = 2;

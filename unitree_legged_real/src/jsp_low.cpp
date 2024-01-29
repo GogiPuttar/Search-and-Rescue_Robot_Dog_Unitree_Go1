@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
 constexpr int NUM_MOTORS = 12;
@@ -37,12 +37,12 @@ public:
 
     //Subscribers
     if (js_source_ == "cmd"){
-      sub_cmd_ = create_subscription<ros2_unitree_legged_msgs::msg::LowCmd>(
+      sub_cmd_ = create_subscription<ros2_unitree_legged_interfaces::msg::LowCmd>(
         "/low_cmd",
         10,
         std::bind(&JSPLowNode::cmd_callback, this, std::placeholders::_1));
     }else if (js_source_ == "state"){
-      sub_state_ = create_subscription<ros2_unitree_legged_msgs::msg::LowState>(
+      sub_state_ = create_subscription<ros2_unitree_legged_interfaces::msg::LowState>(
         "/low_state",
         10,
         std::bind(&JSPLowNode::state_callback, this, std::placeholders::_1));
@@ -73,22 +73,22 @@ public:
   }
 private:
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Subscription<ros2_unitree_legged_msgs::msg::LowState>::SharedPtr sub_state_;
-  rclcpp::Subscription<ros2_unitree_legged_msgs::msg::LowCmd>::SharedPtr sub_cmd_;
+  rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::LowState>::SharedPtr sub_state_;
+  rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::LowCmd>::SharedPtr sub_cmd_;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_joint_states_;
 
   double rate_, interval_;
-  ros2_unitree_legged_msgs::msg::LowState state_;
-  ros2_unitree_legged_msgs::msg::LowCmd cmd_;
+  ros2_unitree_legged_interfaces::msg::LowState state_;
+  ros2_unitree_legged_interfaces::msg::LowCmd cmd_;
   sensor_msgs::msg::JointState joint_states_;
   std::string js_source_;
 
-  void state_callback(const ros2_unitree_legged_msgs::msg::LowState::SharedPtr msg) {
+  void state_callback(const ros2_unitree_legged_interfaces::msg::LowState::SharedPtr msg) {
     //Store most recent state for later use
     state_ = *msg;
   }
 
-  void cmd_callback(const ros2_unitree_legged_msgs::msg::LowCmd::SharedPtr msg) {
+  void cmd_callback(const ros2_unitree_legged_interfaces::msg::LowCmd::SharedPtr msg) {
     //Store most recent state for later use
     cmd_ = *msg;
   }
