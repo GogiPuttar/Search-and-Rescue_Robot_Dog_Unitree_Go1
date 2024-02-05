@@ -47,6 +47,7 @@
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
+#include "tf2_ros/static_transform_broadcaster.h"
 
 #include "unitree_kinematics/geometry2d.hpp"
 #include "unitree_kinematics/se2d.hpp"
@@ -130,6 +131,10 @@ public:
     // Initialize the transform broadcaster
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
+    // Initialize and broadcast static transform
+    // static_tf_broadcaster_ = std::make_unique<tf2_ros::StaticTransformBroadcaster>(*this);
+    // static_tf_broadcaster_.sendTransform(static_tf_zedd_unitree_);
+
     // this->
     highcmd_publisher_ = create_publisher<ros2_unitree_legged_interfaces::msg::HighCmd>("high_cmd", 1);
 
@@ -145,11 +150,15 @@ private:
   // Variables
   size_t timestep_;
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
+  std::unique_ptr<tf2_ros::StaticTransformBroadcaster> static_tf_broadcaster_;
   double x_, y_, theta_;     // Theta in radians, x & y in meters.
   double x0_ = 0.0;          // Meters
   double y0_ = 0.0;          // Meters
   double theta0_ = 0;        // Radians
   double dt_ = 0.0; // Timer in seconds
+
+  // Set Pose of Robot Relative to Camera (for rviz)
+  geometry_msgs::msg::TransformStamped static_tf_zedd_unitree_;
 
   // Create objects
   rclcpp::TimerBase::SharedPtr timer_;
@@ -159,7 +168,7 @@ private:
   
   // TODO: subscriber
 
-  /// \brief Move to robot to specific target pose
+  /// \brief Move the robot to specific goal pose
   void waypoint_callback(
     ros2_unitree_legged_interfaces::srv::Waypoint::Request::SharedPtr request,
     ros2_unitree_legged_interfaces::srv::Waypoint::Response::SharedPtr)
@@ -170,27 +179,26 @@ private:
   }
 
   /// \brief Broadcast the TF frames of the robot
-  void broadcast_unitree()
+  void broadcast_goalpose()
   {
-    geometry_msgs::msg::TransformStamped t_;
+    geometry_msgs::msg::TransformStamped tf_;
 
-    t_.header.stamp = get_clock()->now();
-    t_.header.frame_id = "world";
-    t_.child_frame_id = "unitree_cmd";
-    t_.transform.translation.x = x_;
-    t_.transform.translation.y = y_;
-    t_.transform.translation.z = 0.0;     // Turtle only exists in 2D
+    tf_.header.stamp = this->get_clock()->now();
+    tf_.header.frame_id = "map";
+    tf_.child_frame_id = "goalpose_unitree";
+    tf_.transform.translation.x = 0.0;
+    tf_.transform.translation.y = 0.0;
+    tf_.transform.translation.z = 0.0;     // Dog only exists in 2D
 
     tf2::Quaternion q_;
-    q_.setRPY(0, 0, theta_);     // Rotation around z-axis
-    t_.transform.rotation.x = q_.x();
-    t_.transform.rotation.y = q_.y();
-    t_.transform.rotation.z = q_.z();
-    t_.transform.rotation.w = q_.w();
+    q_.setRPY(0, 0, 0);     // Rotation around z-axis
+    tf_.transform.rotation.x = q_.x();
+    tf_.transform.rotation.y = q_.y();
+    tf_.transform.rotation.z = q_.z();
+    tf_.transform.rotation.w = q_.w();
 
     // Send the transformation
-    tf_broadcaster_->sendTransform(t_);
-
+    tf_broadcaster_->sendTransform(tf_);
   }
 
   /// \brief Main simulation time loop
@@ -227,7 +235,23 @@ private:
 
     highcmd_publisher_->publish(high_cmd_ros);
 
-    broadcast_unitree();
+    broadcast_goalpose();
+
+    static_tf_zedd_unitree_.header.stamp = this->get_clock()->now();
+    static_tf_zedd_unitree_.header.frame_id = "zed_camera_link";
+    static_tf_zedd_unitree_.child_frame_id = "base_link";
+    static_tf_zedd_unitree_.transform.translation.x = 0.0;
+    static_tf_zedd_unitree_.transform.translation.y = 0.0;
+    static_tf_zedd_unitree_.transform.translation.z = 0.0;
+
+    tf2::Quaternion q_zedd_unitree_;
+    q_zedd_unitree_.setRPY(0, 0, 0);     // Rotation around z-axis
+    static_tf_zedd_unitree_.transform.rotation.x = q_zedd_unitree_.x();
+    static_tf_zedd_unitree_.transform.rotation.y = q_zedd_unitree_.y();
+    static_tf_zedd_unitree_.transform.rotation.z = q_zedd_unitree_.z();
+    static_tf_zedd_unitree_.transform.rotation.w = q_zedd_unitree_.w();
+
+    tf_broadcaster_->sendTransform(static_tf_zedd_unitree_);
   }
 };
 
@@ -236,10 +260,10 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  std::cout << "WARNING: Control level is set to HIGH-level." << std::endl
-              << "Make sure the robot is standing on the ground." << std::endl
-              << "Press Enter to continue..." << std::endl;
-  std::cin.ignore();
+  // std::cout << "WARNING: Control level is set to HIGH-level." << std::endl
+  //             << "Make sure the robot is standing on the ground." << std::endl
+  //             << "Press Enter to continue..." << std::endl;
+  // std::cin.ignore();
 
   rclcpp::spin(std::make_shared<Unitree_Waypoint>());
   rclcpp::shutdown();
