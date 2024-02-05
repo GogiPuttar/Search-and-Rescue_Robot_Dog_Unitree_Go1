@@ -38,11 +38,18 @@ def launch_setup(context, *args, **kwargs):
     if (camera_name_val == ''):
         camera_name_val = 'zed'
 
+    # # Rviz2 Configurations to be loaded by ZED Node
+    # config_rviz2 = os.path.join(
+    #     get_package_share_directory('zed_display_rviz2'),
+    #     'rviz2',
+    #     camera_model_val + '.rviz'
+    # )
+
     # Rviz2 Configurations to be loaded by ZED Node
     config_rviz2 = os.path.join(
-        get_package_share_directory('zed_display_rviz2'),
-        'rviz2',
-        camera_model_val + '.rviz'
+        get_package_share_directory('unitree_legged_real'),
+        'config',
+        'zed_unitree.rviz'
     )
 
     # Rviz2 node
@@ -73,7 +80,7 @@ def launch_setup(context, *args, **kwargs):
             package='unitree_legged_real',
             executable='udp_high',
             output='screen'
-        )
+    )
 
     # Start jsp_high
     jsp_high = Node(
@@ -82,12 +89,21 @@ def launch_setup(context, *args, **kwargs):
         output='screen'
     )
 
-    # Start waypoint navigation node
-    unitree_waypoint = Node(
-        package='unitree_legged_real',
-        executable='unitree_waypoint',
-        output='screen'
+    # Static transform between zed_camera_link and unitree's base_link
+    unitree_zed_transform = Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='static_transform_publisher',
+            output='screen',
+            arguments=['-0.2', '0.0', '-0.1', '0.0', '0.0', '0.0', '1.0', 'zed_camera_link', 'base_link'],
     )
+
+    # Start waypoint navigation node
+    # unitree_waypoint = Node(
+    #     package='unitree_legged_real',
+    #     executable='unitree_waypoint',
+    #     output='screen'
+    # )
 
 
     return [
@@ -95,7 +111,8 @@ def launch_setup(context, *args, **kwargs):
         zed_wrapper_launch,
         udp_high,
         jsp_high,
-        unitree_waypoint
+        unitree_zed_transform
+        # unitree_waypoint
     ]
 
 def generate_launch_description():
