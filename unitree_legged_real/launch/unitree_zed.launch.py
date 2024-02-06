@@ -95,7 +95,14 @@ def launch_setup(context, *args, **kwargs):
             executable='static_transform_publisher',
             name='static_transform_publisher',
             output='screen',
-            arguments=['-0.2', '0.0', '-0.1', '0.0', '0.0', '0.0', '1.0', 'zed_camera_link', 'base_link'],
+            arguments=['--x', '-0.2', '--y', '0.00', '--z', '-0.1', '--yaw', '0', '--pitch', '0', '--roll', '0', '--frame-id', 'zed_camera_link', '--child-frame-id', 'base_link'],
+    )
+
+    occupancy_grid_publisher = Node(
+            package='unitree_legged_real',
+            executable='occupancy_grid_publisher',
+            name='occupancy_grid_publisher',
+            output='screen'
     )
 
     # Start waypoint navigation node
@@ -111,7 +118,8 @@ def launch_setup(context, *args, **kwargs):
         zed_wrapper_launch,
         udp_high,
         jsp_high,
-        unitree_zed_transform
+        unitree_zed_transform,
+        occupancy_grid_publisher
         # unitree_waypoint
     ]
 

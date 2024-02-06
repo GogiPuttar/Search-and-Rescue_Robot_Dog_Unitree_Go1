@@ -14,6 +14,14 @@ find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(nav_msgs REQUIRED)
+
+# Point Cloud Library
+find_package(PCL REQUIRED)
+find_package(pcl_conversions REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 # Custom High-Level Kinematics Library
 find_package(unitree_kinematics REQUIRED)
@@ -73,6 +81,12 @@ add_executable(unitree_waypoint src/unitree_waypoint.cpp)
 target_link_libraries(unitree_waypoint unitree_kinematics::unitree_kinematics ${EXTRA_LIBS})
 ament_target_dependencies(unitree_waypoint rclcpp std_msgs std_srvs tf2 tf2_ros ros2_unitree_legged_interfaces)
 
+# Add executable for occupancy grid publisher node
+add_executable(occupancy_grid_publisher src/occupancy_grid_publisher.cpp)
+target_link_libraries(occupancy_grid_publisher ${EXTRA_LIBS})
+target_link_libraries(occupancy_grid_publisher ${PCL_LIBRARIES}) # If using PCL
+ament_target_dependencies(occupancy_grid_publisher rclcpp nav_msgs sensor_msgs pcl_conversions)
+
 add_executable(ros2_position_example src/ros2_position_example.cpp)
 target_link_libraries(ros2_position_example ${EXTRA_LIBS})
 ament_target_dependencies(ros2_position_example rclcpp ros2_unitree_legged_interfaces)
@@ -92,6 +106,7 @@ install(TARGETS
     custom_gait
     udp_low
     jsp_low
+    occupancy_grid_publisher
     DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -21,6 +21,7 @@ Panels:
         - /Sensors1/Left Temperature1/Topic1
         - /Sensors1/Right Temperature1/Topic1
         - /RobotModel2
+        - /Map1
       Splitter Ratio: 0.4577922224998474
     Tree Height: 491
   - Class: rviz_common/Selection
@@ -126,7 +127,9 @@ Visualization Manager:
           Visibility:
             "": true
             Depth:
-              "": true
+              Confidence: true
+              Depth Map: true
+              Loc. Point Cloud: true
               Value: false
             Detection:
               Bodies: true
@@ -142,10 +145,7 @@ Visualization Manager:
               Planes: true
               Value: true
             Position:
-              Odom Path: true
-              Pose: true
-              Pose Path: true
-              TF: true
+              "": true
               Value: false
             RobotModel: false
             Sensors:
@@ -375,6 +375,85 @@ Visualization Manager:
             map:
               odom:
                 zed_camera_link:
+                  base_link:
+                    base:
+                      trunk:
+                        FL_hip:
+                          FL_thigh:
+                            FL_calf:
+                              FL_foot:
+                                {}
+                            FL_calf_rotor:
+                              {}
+                          FL_thigh_rotor:
+                            {}
+                        FL_hip_rotor:
+                          {}
+                        FR_hip:
+                          FR_thigh:
+                            FR_calf:
+                              FR_foot:
+                                {}
+                            FR_calf_rotor:
+                              {}
+                          FR_thigh_rotor:
+                            {}
+                        FR_hip_rotor:
+                          {}
+                        RL_hip:
+                          RL_thigh:
+                            RL_calf:
+                              RL_foot:
+                                {}
+                            RL_calf_rotor:
+                              {}
+                          RL_thigh_rotor:
+                            {}
+                        RL_hip_rotor:
+                          {}
+                        RR_hip:
+                          RR_thigh:
+                            RR_calf:
+                              RR_foot:
+                                {}
+                            RR_calf_rotor:
+                              {}
+                          RR_thigh_rotor:
+                            {}
+                        RR_hip_rotor:
+                          {}
+                        camera_chin:
+                          camera_optical_chin:
+                            {}
+                        camera_face:
+                          camera_optical_face:
+                            {}
+                        camera_left:
+                          camera_laserscan_link_left:
+                            {}
+                          camera_optical_left:
+                            {}
+                        camera_rearDown:
+                          camera_optical_rearDown:
+                            {}
+                        camera_right:
+                          camera_laserscan_link_right:
+                            {}
+                          camera_optical_right:
+                            {}
+                        imu_link:
+                          {}
+                        ultraSound_face:
+                          {}
+                        ultraSound_left:
+                          {}
+                        ultraSound_right:
+                          {}
+                    base_laser:
+                      {}
+                    height_measurement:
+                      base_footprint:
+                        {}
                   zed_camera_center:
                     zed_left_camera_frame:
                       zed_imu_link:
@@ -1035,6 +1114,27 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /occupancy_grid
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /occupancy_grid_updates
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1081,7 +1181,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 7.305004596710205
+      Distance: 7.6337080001831055
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1096,10 +1196,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.1997978538274765
+      Pitch: 0.27479830384254456
       Target Frame: base_link
       Value: Orbit (rviz_default_plugins)
-      Yaw: 3.015064239501953
+      Yaw: 2.740074634552002
     Saved: ~
 Window Geometry:
   Confidence:
