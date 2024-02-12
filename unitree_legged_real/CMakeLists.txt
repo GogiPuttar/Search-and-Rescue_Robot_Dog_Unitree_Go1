@@ -87,6 +87,11 @@ target_link_libraries(occupancy_grid_publisher ${EXTRA_LIBS})
 target_link_libraries(occupancy_grid_publisher ${PCL_LIBRARIES}) # If using PCL
 ament_target_dependencies(occupancy_grid_publisher rclcpp nav_msgs sensor_msgs pcl_conversions)
 
+# Add executable for occupancy grid hello world publisher
+add_executable(hello_world_publisher src/ros2_test.cpp)
+target_link_libraries(hello_world_publisher ${EXTRA_LIBS})
+ament_target_dependencies(hello_world_publisher std_msgs rclcpp)
+
 add_executable(ros2_position_example src/ros2_position_example.cpp)
 target_link_libraries(ros2_position_example ${EXTRA_LIBS})
 ament_target_dependencies(ros2_position_example rclcpp ros2_unitree_legged_interfaces)
@@ -107,6 +112,7 @@ install(TARGETS
     udp_low
     jsp_low
     occupancy_grid_publisher
+    hello_world_publisher
     DESTINATION lib/${PROJECT_NAME}
 )
 

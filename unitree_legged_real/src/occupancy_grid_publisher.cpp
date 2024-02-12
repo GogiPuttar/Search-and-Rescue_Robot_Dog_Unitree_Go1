@@ -77,9 +77,35 @@ private:
   }
 
   // Fill in the 2D map based on the 3D map
-  void project_3Dmap_to_grid()
+  void project_pointcloud_to_grid()
   {
-    occupancy_grid.data.resize(grid_width * grid_height, 0);
+    // Define the thickness of the slice
+    const float slice_thickness = unitree_height + zedmount_height; // meters
+    const float floor_clearance = 0.1; // meters
+    const float sky_clearance = 2.0; // meters
+
+    // Iterate through each point in the point cloud
+    for (const auto& point : pcl_cloud.points) {
+        // Calculate the grid cell indices corresponding to the point
+        int grid_x = (point.x - occupancy_grid.info.origin.position.x) / occupancy_grid.info.resolution;
+        int grid_y = (point.y - occupancy_grid.info.origin.position.y) / occupancy_grid.info.resolution;
+
+        // Check if the point falls within the height slice
+        if (point.z >= occupancy_grid.info.origin.position.z + floor_clearance &&
+            point.z <= occupancy_grid.info.origin.position.z + floor_clearance + slice_thickness) {
+            // Set the corresponding grid cell to occupied (100)
+            int index = grid_x + grid_y * occupancy_grid.info.width;
+            occupancy_grid.data[index] = 100;
+        }
+        else 
+        if ((point.z >= occupancy_grid.info.origin.position.z &&
+            point.z <= occupancy_grid.info.origin.position.z + floor_clearance) ||
+            (point.z >= occupancy_grid.info.origin.position.z + sky_clearance)) {
+
+            int index = grid_x + grid_y * occupancy_grid.info.width;
+            occupancy_grid.data[index] = 0;
+        }
+    }
   }
 
   // Adjust floor level of map
@@ -125,7 +151,7 @@ private:
 
     snap_grid_to_floor();
 
-    project_3Dmap_to_grid();
+    project_pointcloud_to_grid();
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
