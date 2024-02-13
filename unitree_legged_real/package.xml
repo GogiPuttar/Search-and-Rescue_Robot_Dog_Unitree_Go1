@@ -12,7 +12,7 @@
     <build_export_depend>std_msgs</build_export_depend>
     <exec_depend>rcl</exec_depend>
     <exec_depend>rosidl_default_runtime</exec_depend>
-    <depend>ros2_unitree_legged_interfaces</depend>
+    <depend>ros2_unitree_legged_msgs</depend>
     <depend>eigen</depend>
     <depend>pcl_conversions</depend>
 

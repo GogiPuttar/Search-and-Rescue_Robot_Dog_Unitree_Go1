@@ -22,7 +22,7 @@ public:
     occupancy_grid.info.height = grid_height;  // cells
     occupancy_grid.info.origin.position.x = -map_width / 2.0; // meters
     occupancy_grid.info.origin.position.y = -map_height / 2.0; // meters
-    occupancy_grid.info.origin.position.z = map_level; // meters
+    occupancy_grid.info.origin.position.z = default_map_level; // meters
     occupancy_grid.info.origin.orientation.w = 1.0;
 
     // Initialize as empty map (0 for free, 100 for occupied, -1 for unknown)
@@ -61,7 +61,11 @@ private:
 
   const double unitree_height = 0.4; // meters
   const double zedmount_height = 0.1; // meters
-  const double map_level = -(unitree_height + zedmount_height); // meters
+  const double default_map_level = -(unitree_height + zedmount_height); // meters
+
+  // FLAGS
+
+  const bool adaptive_snapping = false; // If true, use the lowest point as the floor. Otherwise take the fixed height.
 
   void publishOccupancyGrid()
   {    
@@ -149,7 +153,14 @@ private:
       RCLCPP_INFO(get_logger(), "Received PointCloud message");
     }
 
-    snap_grid_to_floor();
+    if(adaptive_snapping)
+    {
+      snap_grid_to_floor();
+    }
+    else
+    {
+      occupancy_grid.info.origin.position.z = default_map_level;
+    }
 
     project_pointcloud_to_grid();
   }

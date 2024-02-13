@@ -1,5 +1,6 @@
 """
 Launches high level controls for the unitree go1, the zed camera, and the zed configured rviz environment.
+TODO : Use RViz paramter and include visualize.launch.py
 """
 
 import os

@@ -19,7 +19,7 @@
 </package> -->
 
 <package format="3">
-  <name>ros2_unitree_legged_interfaces</name>
+  <name>ros2_unitree_legged_msgs</name>
   <version>0.4.0</version>
   <description>Contains message and service definitions used by the examples.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>

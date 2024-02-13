@@ -1,7 +1,5 @@
-
-
 cmake_minimum_required(VERSION 3.5)
-project(ros2_unitree_legged_interfaces)
+project(ros2_unitree_legged_msgs)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -15,8 +13,6 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-
-
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MotorCmd.msg"

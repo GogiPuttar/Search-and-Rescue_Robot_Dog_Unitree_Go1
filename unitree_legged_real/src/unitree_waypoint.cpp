@@ -53,12 +53,12 @@
 #include "unitree_kinematics/se2d.hpp"
 #include "unitree_kinematics/kinematic_state.hpp"
 
-#include "ros2_unitree_legged_interfaces/srv/waypoint.hpp"
+#include "ros2_unitree_legged_msgs/srv/waypoint.hpp"
 
-#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
-#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
+#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
+#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 
@@ -124,7 +124,7 @@ public:
     timestep_publisher_ = create_publisher<std_msgs::msg::UInt64>("~/timestep", 10);
 
     // Create ~/waypoint service
-    teleport_server_ = create_service<ros2_unitree_legged_interfaces::srv::Waypoint>(
+    teleport_server_ = create_service<ros2_unitree_legged_msgs::srv::Waypoint>(
       "~/waypoint",
       std::bind(&Unitree_Waypoint::waypoint_callback, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -136,7 +136,7 @@ public:
     // static_tf_broadcaster_.sendTransform(static_tf_zedd_unitree_);
 
     // this->
-    highcmd_publisher_ = create_publisher<ros2_unitree_legged_interfaces::msg::HighCmd>("high_cmd", 1);
+    highcmd_publisher_ = create_publisher<ros2_unitree_legged_msgs::msg::HighCmd>("high_cmd", 1);
 
     // Create Timer
     timer_ = create_wall_timer(
@@ -163,15 +163,15 @@ private:
   // Create objects
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::UInt64>::SharedPtr timestep_publisher_;
-  rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::HighCmd>::SharedPtr highcmd_publisher_;
-  rclcpp::Service<ros2_unitree_legged_interfaces::srv::Waypoint>::SharedPtr teleport_server_;
+  rclcpp::Publisher<ros2_unitree_legged_msgs::msg::HighCmd>::SharedPtr highcmd_publisher_;
+  rclcpp::Service<ros2_unitree_legged_msgs::srv::Waypoint>::SharedPtr teleport_server_;
   
   // TODO: subscriber
 
   /// \brief Move the robot to specific goal pose
   void waypoint_callback(
-    ros2_unitree_legged_interfaces::srv::Waypoint::Request::SharedPtr request,
-    ros2_unitree_legged_interfaces::srv::Waypoint::Response::SharedPtr)
+    ros2_unitree_legged_msgs::srv::Waypoint::Request::SharedPtr request,
+    ros2_unitree_legged_msgs::srv::Waypoint::Response::SharedPtr)
   {
     x_ = request->x;
     y_ = request->y;
@@ -208,7 +208,7 @@ private:
     message.data = timestep_++;
     timestep_publisher_->publish(message);
 
-    ros2_unitree_legged_interfaces::msg::HighCmd high_cmd_ros;
+    ros2_unitree_legged_msgs::msg::HighCmd high_cmd_ros;
 
     high_cmd_ros.head[0] = 0xFE;
     high_cmd_ros.head[1] = 0xEF;

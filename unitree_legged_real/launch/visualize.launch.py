@@ -1,6 +1,8 @@
 """
 Launches the RViz environment with required paramters. Serves as a way to visualize nodes running on the Jetson, without having to run RViz on it.
+TODO: include into unitree_zed.launch.py
 """
+
 
 import os
 
@@ -26,14 +28,14 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def launch_setup(context, *args, **kwargs):
 
-    camera_name = LaunchConfiguration('camera_name')
-    camera_model = LaunchConfiguration('camera_model')
-
-    camera_name_val = camera_name.perform(context)
-    camera_model_val = camera_model.perform(context)
+    camera_name_val = ''
+    camera_model_val = ''
 
     if (camera_name_val == ''):
         camera_name_val = 'zed'
+
+    if (camera_model_val == ''):
+        camera_model_val = 'zed2i'
 
     # Rviz2 Configurations to be loaded by ZED Node
     config_rviz2 = os.path.join(
@@ -42,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
         'zed_unitree.rviz'
     )
 
-    Rviz2 node
+    # Rviz2 node
     rviz2_node = Node(
         package='rviz2',
         namespace=camera_name_val,

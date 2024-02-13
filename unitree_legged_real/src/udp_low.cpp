@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
-#include "ros2_unitree_legged_interfaces/msg/high_cmd.hpp"
-#include "ros2_unitree_legged_interfaces/msg/high_state.hpp"
-#include "ros2_unitree_legged_interfaces/msg/low_cmd.hpp"
-#include "ros2_unitree_legged_interfaces/msg/low_state.hpp"
+#include "ros2_unitree_legged_msgs/msg/high_cmd.hpp"
+#include "ros2_unitree_legged_msgs/msg/high_state.hpp"
+#include "ros2_unitree_legged_msgs/msg/low_cmd.hpp"
+#include "ros2_unitree_legged_msgs/msg/low_state.hpp"
 #include "unitree_legged_sdk/unitree_legged_sdk.h"
 #include "convert.h"
 #include <string>
@@ -41,15 +41,15 @@ class LL_UDP : public rclcpp::Node
       timer_ = this->create_wall_timer(
         2ms,
         std::bind(&LL_UDP::timer_callback, this));
-      pub_low_ = this->create_publisher<ros2_unitree_legged_interfaces::msg::LowState>("low_state", 10);
-      sub_low_ = this->create_subscription<ros2_unitree_legged_interfaces::msg::LowCmd>("low_cmd", 10,
+      pub_low_ = this->create_publisher<ros2_unitree_legged_msgs::msg::LowState>("low_state", 10);
+      sub_low_ = this->create_subscription<ros2_unitree_legged_msgs::msg::LowCmd>("low_cmd", 10,
         std::bind(&LL_UDP::low_cmd_cb, this, std::placeholders::_1));
     }
   private:
-    void low_cmd_cb(const ros2_unitree_legged_interfaces::msg::LowCmd::SharedPtr msg)
+    void low_cmd_cb(const ros2_unitree_legged_msgs::msg::LowCmd::SharedPtr msg)
     {
       // I had to change the argument to the above vs
-      // (const ros2_unitree_legged_interfaces::msg::LowCmd & msg) const
+      // (const ros2_unitree_legged_msgs::msg::LowCmd & msg) const
       // otherwise msg did not match the correct type to call rosMsg2Cmd :/
       custom.low_cmd = rosMsg2Cmd(msg);
       custom.low_udp.SetSend(custom.low_cmd);
@@ -64,10 +64,10 @@ class LL_UDP : public rclcpp::Node
       pub_low_->publish(low_state_ros);
     }
     rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Publisher<ros2_unitree_legged_interfaces::msg::LowState>::SharedPtr pub_low_;
-    rclcpp::Subscription<ros2_unitree_legged_interfaces::msg::LowCmd>::SharedPtr sub_low_;
+    rclcpp::Publisher<ros2_unitree_legged_msgs::msg::LowState>::SharedPtr pub_low_;
+    rclcpp::Subscription<ros2_unitree_legged_msgs::msg::LowCmd>::SharedPtr sub_low_;
     Custom custom;
-    ros2_unitree_legged_interfaces::msg::LowState low_state_ros;
+    ros2_unitree_legged_msgs::msg::LowState low_state_ros;
 };
 
 int main(int argc, char * argv[])
