@@ -22,6 +22,7 @@ Panels:
         - /Sensors1/Right Temperature1/Topic1
         - /RobotModel2
         - /Map1
+        - /Map1/Topic1
       Splitter Ratio: 0.4577922224998474
     Tree Height: 491
   - Class: rviz_common/Selection
@@ -125,17 +126,15 @@ Visualization Manager:
             Value: /zed/zed_node/rgb/image_rect_color
           Value: false
           Visibility:
-            "": true
             Depth:
-              Confidence: true
-              Depth Map: true
-              Loc. Point Cloud: true
+              "": true
               Value: false
             Detection:
               Bodies: true
               Objects: true
               Value: true
             Grid: false
+            Map: true
             Mapping:
               Global 3D Map: true
               Loc. Color Img: true
@@ -145,7 +144,10 @@ Visualization Manager:
               Planes: true
               Value: true
             Position:
-              "": true
+              Odom Path: true
+              Pose: true
+              Pose Path: true
+              TF: true
               Value: false
             RobotModel: false
             Sensors:
@@ -239,7 +241,7 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
-      Enabled: true
+      Enabled: false
       Name: Depth
     - Class: rviz_common/Group
       Displays:
@@ -1126,13 +1128,13 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /occupancy_grid
+        Value: /map
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /occupancy_grid_updates
+        Value: /map_updates
       Use Timestamp: false
       Value: true
   Enabled: true
@@ -1181,7 +1183,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 7.6337080001831055
+      Distance: 5.141158580780029
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1196,10 +1198,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.27479830384254456
+      Pitch: 0.5747967958450317
       Target Frame: base_link
       Value: Orbit (rviz_default_plugins)
-      Yaw: 2.740074634552002
+      Yaw: 2.475080728530884
     Saved: ~
 Window Geometry:
   Confidence:

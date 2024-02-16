@@ -15,6 +15,7 @@ find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
 
 # Point Cloud Library
 find_package(PCL REQUIRED)
@@ -87,10 +88,16 @@ target_link_libraries(occupancy_grid_publisher ${EXTRA_LIBS})
 target_link_libraries(occupancy_grid_publisher ${PCL_LIBRARIES}) # If using PCL
 ament_target_dependencies(occupancy_grid_publisher rclcpp nav_msgs sensor_msgs pcl_conversions)
 
-# Add executable for occupancy grid hello world publisher
-add_executable(hello_world_publisher src/ros2_test.cpp)
-target_link_libraries(hello_world_publisher ${EXTRA_LIBS})
-ament_target_dependencies(hello_world_publisher std_msgs rclcpp)
+# Add executable for costmap publisher node
+#add_executable(costmap_publisher src/costmap_publisher.cpp)
+#target_link_libraries(costmap_publisher ${EXTRA_LIBS})
+#target_link_libraries(costmap_publisher ${PCL_LIBRARIES}) # If using PCL
+#ament_target_dependencies(costmap_publisher rclcpp nav_msgs nav2_msgs sensor_msgs pcl_conversions)
+
+# Add executable for hello world publisher
+# add_executable(hello_world_publisher src/ros2_test.cpp)
+# target_link_libraries(hello_world_publisher ${EXTRA_LIBS})
+# ament_target_dependencies(hello_world_publisher std_msgs rclcpp)
 
 add_executable(ros2_position_example src/ros2_position_example.cpp)
 target_link_libraries(ros2_position_example ${EXTRA_LIBS})
@@ -112,7 +119,8 @@ install(TARGETS
     udp_low
     jsp_low
     occupancy_grid_publisher
-    hello_world_publisher
+    # costmap_publisher
+    # hello_world_publisher
     DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -53,14 +53,14 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # Rviz2 node
-    # rviz2_node = Node(
-    #     package='rviz2',
-    #     namespace=camera_name_val,
-    #     executable='rviz2',
-    #     name=camera_model_val +'_rviz2',
-    #     output='screen',
-    #     arguments=[['-d'], [config_rviz2]],
-    # )
+    rviz2_node = Node(
+        package='rviz2',
+        namespace=camera_name_val,
+        executable='rviz2',
+        name=camera_model_val +'_rviz2',
+        output='screen',
+        arguments=[['-d'], [config_rviz2]],
+    )
 
     # ZED Wrapper launch file
     zed_wrapper_launch = IncludeLaunchDescription(
@@ -105,6 +105,13 @@ def launch_setup(context, *args, **kwargs):
             output='screen'
     )
 
+    costmap_publisher = Node(
+            package='unitree_legged_real',
+            executable='costmap_publisher',
+            name='costmap_publisher',
+            output='screen'
+    )
+
     # Start waypoint navigation node
     # unitree_waypoint = Node(
     #     package='unitree_legged_real',
@@ -114,12 +121,13 @@ def launch_setup(context, *args, **kwargs):
 
 
     return [
-        # rviz2_node,
+        rviz2_node,
         zed_wrapper_launch,
         udp_high,
         jsp_high,
         unitree_zed_transform,
-        occupancy_grid_publisher
+        occupancy_grid_publisher,
+        costmap_publisher
         # unitree_waypoint
     ]
 
