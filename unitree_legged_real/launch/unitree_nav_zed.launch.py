@@ -22,7 +22,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='use_nav2_rviz',
-            default_value='true', # default was true
+            default_value='false', # default was true
             choices=['true','false'],
             description='Open RVIZ for Nav2 visualization'
         ),
