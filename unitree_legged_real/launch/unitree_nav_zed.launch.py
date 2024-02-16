@@ -22,6 +22,13 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='use_nav2_rviz',
+            default_value='true', # default was true
+            choices=['true','false'],
+            description='Open RVIZ for Nav2 visualization'
+        ),
+
+        DeclareLaunchArgument(
+            name='use_zed_rviz',
             default_value='false', # default was true
             choices=['true','false'],
             description='Open RVIZ for Nav2 visualization'
@@ -53,6 +60,20 @@ def generate_launch_description():
                 ])
             ],
             condition=IfCondition(LaunchConfiguration('use_rviz')),
+        ),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            arguments=[
+                '-d',
+                PathJoinSubstitution([
+                    FindPackageShare('unitree_legged_real'),
+                    'config',
+                    'unitree_zed_nav.rviz'
+                ])
+            ],
+            condition=IfCondition(LaunchConfiguration('use_zed_rviz')),
         ),
 
         IncludeLaunchDescription(

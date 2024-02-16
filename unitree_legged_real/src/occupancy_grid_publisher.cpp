@@ -62,8 +62,8 @@ private:
   const int map_precision = 10; // cells per meter. 
   const double map_resolution = 1.0 / static_cast<double>(map_precision); // meters per cell. Must be 1/N.
   
-  const double map_width = 30.0; // meters. Must result in integer grid cells.
-  const double map_height = 30.0; // meters. Must result in integer grid cells.
+  const double map_width = 40.0; // meters. Must result in integer grid cells.
+  const double map_height = 40.0; // meters. Must result in integer grid cells.
 
   const int grid_width = map_width * map_precision; // cells
   const int grid_height = map_height * map_precision; // cells
@@ -86,7 +86,7 @@ private:
     // Publish the message
     publisher_->publish(occupancy_grid);
 
-    RCLCPP_INFO(get_logger(), "OccupancyGrid published");
+    RCLCPP_DEBUG(get_logger(), "OccupancyGrid published");
   }
 
   // Fill in the 2D map based on the 3D map
@@ -106,50 +106,64 @@ private:
     const int erosion_threshold = 6; // Minimum no. of free cells around an obstacle to qualify for erosion. 0-8.
     const int erosion_passes = 10; // No. of erosion iterations. 0-inf.
 
+    const float clear_height = 2.0; // meters
+    const float clear_width = 1.0; // meters
+
     // Iterate through each point in the point cloud
     for (const auto& point : pcl_cloud.points) 
     {
         // Calculate the grid cell indices corresponding to the point
-        int grid_x = round((point.x - occupancy_grid.info.origin.position.x) / occupancy_grid.info.resolution);
-        int grid_y = round((point.y - occupancy_grid.info.origin.position.y) / occupancy_grid.info.resolution);
+        int grid_x = static_cast<int>((point.x - occupancy_grid.info.origin.position.x) / occupancy_grid.info.resolution);
+        int grid_y = static_cast<int>((point.y - occupancy_grid.info.origin.position.y) / occupancy_grid.info.resolution);
 
-        int index = grid_x + grid_y * occupancy_grid.info.width;
+        // Check if point is confined to the grid
+        if((grid_x >= 0) && (grid_x < grid_width) && (grid_y >= 0) && (grid_y < grid_height))
+        {
+          // Convert grid cell indices to occupancy grid index
+          int index = grid_x + grid_y * occupancy_grid.info.width;
 
-        // Check if the point falls within the height slice
-        if (point.z >= occupancy_grid.info.origin.position.z + floor_clearance &&
-            point.z <= occupancy_grid.info.origin.position.z + floor_clearance + slice_thickness) {
-            // Set the corresponding grid cell to occupied (100)
-            // occupancy_grid.data[index] = 100;
-            if(occupancy_grid.data[index] == -1)
-            {
-              occupancy_grid.data[index] = sensitivity;
-            }
-            else if(occupancy_grid.data[index] >= 100 - sensitivity)
-            {
-              occupancy_grid.data[index] = 100;
-            }
-            else
-            {
-              occupancy_grid.data[index] += sensitivity;
-            }
+          // Check if the point falls within the height slice
+          if (point.z >= occupancy_grid.info.origin.position.z + floor_clearance &&
+              point.z <= occupancy_grid.info.origin.position.z + floor_clearance + slice_thickness) {
+              // Increment confidence in obstacle presence for a certain grid cell, for every point present in it
+              if(occupancy_grid.data[index] == -1)
+              {
+                occupancy_grid.data[index] = sensitivity;
+              }
+              else if(occupancy_grid.data[index] >= 100 - sensitivity)
+              {
+                occupancy_grid.data[index] = 100;
+              }
+              else
+              {
+                occupancy_grid.data[index] += sensitivity;
+              }
+          }
+          else // Check if point is part of the floor/ceiling
+          if ((point.z >= occupancy_grid.info.origin.position.z + reflective_floor_clearance && // FLOOR
+              point.z <= occupancy_grid.info.origin.position.z + floor_clearance) || // FLOOR
+              (point.z >= occupancy_grid.info.origin.position.z + sky_clearance)) { // CEILING
 
-        }
-        else 
-        if ((point.z >= occupancy_grid.info.origin.position.z + reflective_floor_clearance && // FLOOR
-            point.z <= occupancy_grid.info.origin.position.z + floor_clearance) || // FLOOR
-            (point.z >= occupancy_grid.info.origin.position.z + sky_clearance)) { // CEILING
-
-            occupancy_grid.data[index] = 0;
+              occupancy_grid.data[index] = 0;
+          }
         }
     }
+    RCLCPP_DEBUG(get_logger(), "Obstacles detected");
 
     // Post Processing
 
-    // Thresholding
+    // Convert confidence values in occupancy grid based on a threshold.
     threshold_map(num_points_threshold);
 
-    // Erosion
+    // Erode away outliers
     erode_map(erosion_threshold, erosion_passes);
+
+    // Pad the map's borders with obstacles.
+    pad_map();
+
+    // Assume that the robot starts off heading towards a clear spot.
+    clear_initial_heading(clear_height, clear_width);
+
   }
 
   // Adjust floor level of map
@@ -170,7 +184,7 @@ private:
     }
 
     // Print the minimum z coordinate and its corresponding point
-    RCLCPP_INFO(get_logger(), "Minimum z coordinate: %f", min_z);
+    RCLCPP_DEBUG(get_logger(), "Minimum z coordinate: %f", min_z);
 
     // Set grid height
     occupancy_grid.info.origin.position.z = min_z; // meters
@@ -190,7 +204,7 @@ private:
     }
     else
     {
-      RCLCPP_INFO(get_logger(), "Received PointCloud message");
+      RCLCPP_DEBUG(get_logger(), "Received PointCloud message");
     }
 
     if(adaptive_snapping)
@@ -223,6 +237,27 @@ private:
         occupancy_grid.data[index] = 100;
       }
     }
+
+    RCLCPP_DEBUG(get_logger(), "Generated map");
+  }
+
+  void pad_map()
+  {
+    for (int index = 0; index < grid_width * grid_height; index++)
+    {     
+      if( index < grid_width || // North Wall
+          index%grid_width == 0 || // West Wall
+          index >= grid_width * (grid_height-1) || // South Wall
+          index%grid_width == (grid_width-1) // East Wall
+        )
+      {
+        occupancy_grid.data[index] == 100;
+        // RCLCPP_INFO(get_logger(), "Padded map");
+
+      }
+    } 
+
+    RCLCPP_DEBUG(get_logger(), "Padded map");
   }
 
   void erode_map(const int erosion_threshold, const int erosion_passes)
@@ -306,11 +341,32 @@ private:
         if(free_ctr >= erosion_threshold)
         {
           occupancy_grid.data[index] == 0;
+          // RCLCPP_INFO(get_logger(), "Eroded");
+
         }
         // Reset counter
         free_ctr = 0;
       }
     }
+
+    RCLCPP_DEBUG(get_logger(), "Eroded map");
+  }
+
+  void clear_initial_heading(const int clear_height_meters, const int clear_width_meters)
+  {
+    // Buffer around the cleared section
+    int buffer = static_cast<int>(0.5 / occupancy_grid.info.resolution);
+    
+    int clear_height = static_cast<int>(clear_height_meters / occupancy_grid.info.resolution);
+    int clear_width = static_cast<int>(clear_width_meters / occupancy_grid.info.resolution);
+
+    for(int index = 0; index < ((clear_height + 2*buffer) * (clear_width + 2*buffer)); index++)
+    {
+      occupancy_grid.data[(grid_height/2 - clear_height/2 - buffer) * grid_width + grid_width/2 - buffer // Bottom right corner. Origin - half clearance width - buffer.
+                            + static_cast<int>(index/(clear_width + 2*buffer))*grid_width // Row increment
+                            + index%(clear_width + 2*buffer)] = 0; // Column Increment
+    }
+    RCLCPP_DEBUG(get_logger(), "Cleared Initial Heading");
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
