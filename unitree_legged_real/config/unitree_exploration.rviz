@@ -523,8 +523,6 @@ Visualization Manager:
                     {}
               zed_camera_center:
                 zed_left_camera_frame:
-                  zed_imu_link:
-                    {}
                   zed_left_camera_optical_frame:
                     {}
                 zed_right_camera_frame:
@@ -933,6 +931,18 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /waypoints
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /frontier_markers
       Value: true
   Enabled: true
   Global Options:

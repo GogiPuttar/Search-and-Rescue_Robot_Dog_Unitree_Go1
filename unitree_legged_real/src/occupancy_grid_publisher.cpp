@@ -1,6 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
+#include <string>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -21,17 +22,13 @@ public:
     occupancy_grid.info.resolution = map_resolution; // meters/cell
     occupancy_grid.info.width = grid_width;  // cells
     occupancy_grid.info.height = grid_height;  // cells
-    occupancy_grid.info.origin.position.x = -map_width / 2.0; // meters
-    occupancy_grid.info.origin.position.y = -map_height / 2.0; // meters
+    occupancy_grid.info.origin.position.x = map_origin_x; // meters
+    occupancy_grid.info.origin.position.y = map_origin_y; // meters
     occupancy_grid.info.origin.position.z = default_map_level; // meters
     occupancy_grid.info.origin.orientation.w = 1.0;
 
     // Initialize as empty map (0 for free, 100 for occupied, -1 for unknown)
     occupancy_grid.data.resize(grid_width * grid_height, -1);
-
-    // rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-    // custom_qos_profile.durability = RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL;
-    // const rclcpp::QoS custom_qos = rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(custom_qos_profile));
 
     // Set QoS settings for the /map topic to match /global_costmap/global_costmap node's subscriber
     rclcpp::QoS custom_qos(rclcpp::KeepLast(10));
@@ -64,6 +61,9 @@ private:
   
   const double map_width = 40.0; // meters. Must result in integer grid cells.
   const double map_height = 40.0; // meters. Must result in integer grid cells.
+
+  const double map_origin_x = -map_width/4.0; // meters. Bottom left corner of the grid, in map frame. Must result in integer grid cells.
+  const double map_origin_y = -map_height/2.0; // meters. Bottom left corner of the grid, in map frame. Must result in integer grid cells.
 
   const int grid_width = map_width * map_precision; // cells
   const int grid_height = map_height * map_precision; // cells
@@ -106,8 +106,10 @@ private:
     const int erosion_threshold = 6; // Minimum no. of free cells around an obstacle to qualify for erosion. 0-8.
     const int erosion_passes = 10; // No. of erosion iterations. 0-inf.
 
+    const float clear_width = 2.0; // meters
     const float clear_height = 2.0; // meters
-    const float clear_width = 1.0; // meters
+
+    const double padding_thickness = 0.5; // meters
 
     // Iterate through each point in the point cloud
     for (const auto& point : pcl_cloud.points) 
@@ -159,10 +161,10 @@ private:
     erode_map(erosion_threshold, erosion_passes);
 
     // Pad the map's borders with obstacles.
-    pad_map();
+    pad_map(padding_thickness);
 
     // Assume that the robot starts off heading towards a clear spot.
-    clear_initial_heading(clear_height, clear_width);
+    clear_initial_heading(clear_width, clear_height);
 
   }
 
@@ -241,22 +243,13 @@ private:
     RCLCPP_DEBUG(get_logger(), "Generated map");
   }
 
-  void pad_map()
+  void pad_map(const double padding_thickness)
   {
-    for (int index = 0; index < grid_width * grid_height; index++)
-    {     
-      if( index < grid_width || // North Wall
-          index%grid_width == 0 || // West Wall
-          index >= grid_width * (grid_height-1) || // South Wall
-          index%grid_width == (grid_width-1) // East Wall
-        )
-      {
-        occupancy_grid.data[index] == 100;
-        // RCLCPP_INFO(get_logger(), "Padded map");
-
-      }
-    } 
-
+    draw_rectangle(map_origin_x+padding_thickness/2.0, map_origin_y+map_height/2.0, padding_thickness,map_height,"obstacle"); // Left Wall
+    draw_rectangle(map_width+map_origin_x-padding_thickness/2.0, map_origin_y+map_height/2.0, padding_thickness,map_height,"obstacle"); // Right Wall
+    draw_rectangle(map_origin_x+map_width/2.0, map_origin_y+padding_thickness/2.0, map_width,padding_thickness,"obstacle"); // Lower Wall
+    draw_rectangle(map_origin_x+map_width/2.0, map_origin_y+map_height-padding_thickness/2.0, map_width,padding_thickness,"obstacle"); // Upper Wall
+  
     RCLCPP_DEBUG(get_logger(), "Padded map");
   }
 
@@ -352,23 +345,68 @@ private:
     RCLCPP_DEBUG(get_logger(), "Eroded map");
   }
 
-  void clear_initial_heading(const int clear_height_meters, const int clear_width_meters)
+  void clear_initial_heading(const double clear_width_meters, const double clear_height_meters)
   {
     // Buffer around the cleared section
-    int buffer = static_cast<int>(0.5 / occupancy_grid.info.resolution);
-    
-    int clear_height = static_cast<int>(clear_height_meters / occupancy_grid.info.resolution);
-    int clear_width = static_cast<int>(clear_width_meters / occupancy_grid.info.resolution);
+    double buffer = 0.5;
 
-    for(int index = 0; index < ((clear_height + 2*buffer) * (clear_width + 2*buffer)); index++)
-    {
-      occupancy_grid.data[(grid_height/2 - clear_height/2 - buffer) * grid_width + grid_width/2 - buffer // Bottom right corner. Origin - half clearance width - buffer.
-                            + static_cast<int>(index/(clear_width + 2*buffer))*grid_width // Row increment
-                            + index%(clear_width + 2*buffer)] = 0; // Column Increment
-    }
-    RCLCPP_DEBUG(get_logger(), "Cleared Initial Heading");
+    // Free initial heading
+    draw_rectangle(0.0, 0.0, clear_width_meters, clear_height_meters, "free");
+    // Bunker behind initial position
+    draw_rectangle(-(clear_width_meters/2.0 + buffer/2.0), 0.0, buffer, clear_height_meters, "obstacle");
+    // Walls adjacent to initial heading
+    draw_rectangle(-(clear_width_meters/2.0), (clear_height_meters/2.0 + buffer/2.0), clear_width_meters, buffer, "obstacle");
+    draw_rectangle(-(clear_width_meters/2.0), -(clear_height_meters/2.0 + buffer/2.0), clear_width_meters, buffer, "obstacle");
   }
 
+  /// \brief Draws a rectangle in th grid
+  // \center_x : center in \map frame in meters
+  // \center_y : center in \map frame in meters
+  // \width : width of rectangle in meters
+  // \height : height of rectangle in meters
+  // \type : "obstacle", "free", or "unexplored"
+  void draw_rectangle(const double center_x, const double center_y, const double width, const double height,const std::string type)
+  {
+    // Check if rectangle is in the map
+    if (width <= 0.0 || height <= 0.0 || // Check if width or height is non-positive
+        center_x + width/2.0 > map_width + map_origin_x || // Right Limit in /map frame
+        center_x - width/2.0 < map_origin_x || // Left Limit in /map frame
+        center_y + height/2.0 > map_height + map_origin_y || // Upper limit in /map frame
+        center_y - height/2.0 < map_origin_y // Lower limit in /map frame
+        ) 
+    {
+        RCLCPP_ERROR(get_logger(), "Rectangle is out of bounds! %f, %f, %f. %f", center_x, center_y, width, height);
+        throw std::runtime_error("Rectangle is out of bounds!");
+    }
+    else
+    {
+      const int ncx = static_cast<int>((center_x - map_origin_x) / map_resolution);
+      const int ncy = static_cast<int>((center_y - map_origin_y) / map_resolution);
+      const int nwidth = static_cast<int>(width / map_resolution);
+      const int nheight = static_cast<int>(height / map_resolution);
+
+      int fill = -1;
+      if(type == "obstacle")
+      {
+        fill = 100;
+      }
+      else if(type == "free")
+      {
+        fill = 0;
+      }
+      else if(type == "unexplored")
+      {
+        fill = -1;
+      }
+
+      for(int index = 0; index < (nwidth * nheight); index++)
+      {
+        occupancy_grid.data[ (ncx - nwidth/2) + (ncy - nheight/2) * grid_width // Bottom left corner. 
+                              + static_cast<int>(index/nwidth)*grid_width // Row increment
+                              + index%(nwidth)] = fill; // Column Increment
+      }
+    }
+  }
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr publisher_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_;

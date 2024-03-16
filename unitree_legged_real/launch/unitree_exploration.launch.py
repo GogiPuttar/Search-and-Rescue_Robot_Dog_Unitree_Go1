@@ -56,7 +56,7 @@ def generate_launch_description():
                 PathJoinSubstitution([
                     FindPackageShare('unitree_legged_real'),
                     'config',
-                    'unitree_zed_nav.rviz'
+                    'unitree_exploration.rviz'
                 ])
             ],
             condition=IfCondition(LaunchConfiguration('use_rviz')),
@@ -70,7 +70,7 @@ def generate_launch_description():
                 PathJoinSubstitution([
                     FindPackageShare('unitree_legged_real'),
                     'config',
-                    'unitree_zed_nav.rviz'
+                    'unitree_zed.rviz'
                 ])
             ],
             condition=IfCondition(LaunchConfiguration('use_zed_rviz')),
@@ -146,5 +146,15 @@ def generate_launch_description():
                 ])
             ),
             condition=IfCondition(LaunchConfiguration('use_nav2_rviz')),
+        ),
+
+        Node(
+            package='unitree_nav',
+            executable='nav_to_pose',
+        ),
+
+        Node(
+            package='unitree_exploration',
+            executable='frontier_explorer',
         ),
     ])
